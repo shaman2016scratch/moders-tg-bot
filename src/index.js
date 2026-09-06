@@ -12,7 +12,8 @@ bot.command('start', async (ctx) => {
             username: ctx.message.from.username,
             firstName: ctx.message.from.first_name,
             language: "en",
-            joined: new Date()
+            joined: new Date(),
+            reputation: 0
         }
         await updateIndex(data)
     }
@@ -27,7 +28,8 @@ bot.command('help', async (ctx) => {
             username: ctx.message.from.username,
             firstName: ctx.message.from.first_name,
             language: "en",
-            joined: new Date()
+            joined: new Date(),
+            reputation: 0
         }
         await updateIndex(data)
     }
