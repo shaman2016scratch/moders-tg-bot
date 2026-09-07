@@ -124,6 +124,24 @@ bot.hears('-', async (ctx) => {
     }
 })
 
+bot.command('me', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    const userId = ctx.message.from.id
+    const user = data.users[userId.toString()]
+    ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id || 0}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
+})
+
 bot.launch()
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
