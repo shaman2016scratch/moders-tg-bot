@@ -51,7 +51,11 @@ bot.command('info', async (ctx) => {
     }
     const userId = ctx.message.text.replace("/info ", "")
     const user = data.users[userId.toString()]
-    ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
+    if (user) {
+        ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id || 0}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
+    } else {
+        ctx.reply(`Пользователя не существует`)
+    }
 })
 
 bot.hears('+', async (ctx) => {
