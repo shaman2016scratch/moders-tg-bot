@@ -54,6 +54,72 @@ bot.command('info', async (ctx) => {
     ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
 })
 
+bot.hears('+', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    if (ctx.message.reply_to_message) {
+        if (!Object.keys(data.users).includes(ctx.message.reply_to_message.from.id.toString())) {
+            data.users[ctx.message.reply_to_message.from.id.toString()] = {
+                id: ctx.message.reply_to_message.from.id,
+                username: ctx.message.reply_to_message.from.username,
+                firstName: ctx.message.reply_to_message.from.first_name,
+                language: "en",
+                joined: new Date(),
+                reputation: 0
+            }
+            await updateIndex(data)
+        }
+        data.users[ctx.message.reply_to_message.from.id.toString()].reputation++
+        await updateIndex(data)
+        const sendUser = (ctx.message.from.username ? `@${ctx.message.from.username}` : `tg://user?id=${ctx.message.from.id}`)
+        const targetUser = (ctx.message.reply_to_message.from.username ? `@${ctx.message.reply_to_message.from.username}` : `tg://user?id=${ctx.message.reply_to_message.from.id}`)
+        ctx.reply(`${sendUser} увеличил репутацию ${targetUser}.\nНовая репутация: ${data.users[ctx.message.reply_to_message.from.id.toString()].reputation}`, { parse_mode: "HTML" })
+    }
+})
+
+bot.hears('-', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    if (ctx.message.reply_to_message) {
+        if (!Object.keys(data.users).includes(ctx.message.reply_to_message.from.id.toString())) {
+            data.users[ctx.message.reply_to_message.from.id.toString()] = {
+                id: ctx.message.reply_to_message.from.id,
+                username: ctx.message.reply_to_message.from.username,
+                firstName: ctx.message.reply_to_message.from.first_name,
+                language: "en",
+                joined: new Date(),
+                reputation: 0
+            }
+            await updateIndex(data)
+        }
+        data.users[ctx.message.reply_to_message.from.id.toString()].reputation--
+        await updateIndex(data)
+        const sendUser = (ctx.message.from.username ? `@${ctx.message.from.username}` : `tg://user?id=${ctx.message.from.id}`)
+        const targetUser = (ctx.message.reply_to_message.from.username ? `@${ctx.message.reply_to_message.from.username}` : `tg://user?id=${ctx.message.reply_to_message.from.id}`)
+        ctx.reply(`${sendUser} уменьшил репутацию ${targetUser}.\nНовая репутация: ${data.users[ctx.message.reply_to_message.from.id.toString()].reputation}`, { parse_mode: "HTML" })
+    }
+})
+
 bot.launch()
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
