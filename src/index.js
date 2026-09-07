@@ -33,7 +33,25 @@ bot.command('help', async (ctx) => {
         }
         await updateIndex(data)
     }
-    ctx.reply("<b>Команды:</b>\nИсходный код: https://github.com/shaman2016scratch/moders-tg-bot", { parse_mode: "HTML" })
+    ctx.reply("<b>Команды:</b>\n/info [id] - информация о пользователе\nИсходный код: https://github.com/shaman2016scratch/moders-tg-bot", { parse_mode: "HTML" })
+})
+
+bot.command('info', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    const userId = ctx.message.text.replace("/info ", "")
+    const user = data.users[userId.toString()]
+    ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
 })
 
 bot.launch()

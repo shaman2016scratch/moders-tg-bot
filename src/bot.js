@@ -12,7 +12,6 @@ const __dirname = path.dirname(__filename)
 
 const BOT_TOKEN = process.env.TG_BOT_TOKEN
 
-console.log(BOT_TOKEN)
 const bot = new Telegraf(BOT_TOKEN)
 
 export default bot
