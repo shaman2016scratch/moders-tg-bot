@@ -33,7 +33,15 @@ bot.command('help', async (ctx) => {
         }
         await updateIndex(data)
     }
-    ctx.reply("<b>Команды:</b>\n/info [id] - информация о выбранном пользователе\n/me - ваша информация\nИсходный код: https://github.com/shaman2016scratch/moders-tg-bot", { parse_mode: "HTML" })
+    ctx.reply(`<b>Команды:</b>
+        /info [id] - информация о выбранном пользователе
+        /me - ваша информация
+        /ban - заблокировать пользователя
+        /unban - разблокировать пользователя
+        /mute - запретить пользователю писать
+        /unmute - разрешить пользователю писать
+        /setpermission - изменить права пользователя
+        Исходный код: https://github.com/shaman2016scratch/moders-tg-bot`, { parse_mode: "HTML" })
 })
 
 bot.command('info', async (ctx) => {
@@ -180,6 +188,141 @@ bot.command('setreputation', async (ctx) => {
         const rep = ctx.message.reply_to_message ? Number(ctx.message.text.split(" ")[1]) : Number(ctx.message.text.split(" ")[2])
         data.users[userId.toString()].reputation = rep
         await updateIndex(data)
+    }
+})
+
+bot.command('ban', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    const admins = await ctx.getChatAdministrators()
+    if (data.admins.includes(ctx.message.from.id) || admins) {
+        const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
+        const time = ctx.message.reply_to_message ? Number(ctx.message.text.split(" ")[1]) : Number(ctx.message.text.split(" ")[2])
+        try {
+            await ctx.banChatMember(userId, time)
+            ctx.reply(`Пользователь ${userId} забанен!`)
+        } catch (e) {
+            ctx.reply(`Error with ban chat member: ${e.message}`)
+            console.error(e)
+        }
+    }
+})
+
+bot.command('unban', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    const admins = await ctx.getChatAdministrators()
+    if (data.admins.includes(ctx.message.from.id) || admins) {
+        const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
+        try {
+            await ctx.unbanChatMember(userId)
+            ctx.reply(`Пользователь ${userId} разбанен!`)
+        } catch (e) {
+            ctx.reply(`Error with unban chat member: ${e.message}`)
+            console.error(e)
+        }
+    }
+})
+
+bot.command('mute', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    const admins = await ctx.getChatAdministrators()
+    if (data.admins.includes(ctx.message.from.id) || admins) {
+        const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
+        try {
+            await ctx.restrictChatMember(userId, { permissions: { can_send_messages: false } })
+            ctx.reply(`Пользователь ${userId} замучен!`)
+        } catch (e) {
+            ctx.reply(`Error with mute chat member: ${e.message}`)
+            console.error(e)
+        }
+    }
+})
+
+bot.command('unmute', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    const admins = await ctx.getChatAdministrators()
+    if (data.admins.includes(ctx.message.from.id) || admins) {
+        const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
+        try {
+            await ctx.restrictChatMember(userId, { permissions: { can_send_messages: true } })
+            ctx.reply(`Пользователь ${userId} размучен!`)
+        } catch (e) {
+            ctx.reply(`Error with unmute chat member: ${e.message}`)
+            console.error(e)
+        }
+    }
+})
+
+bot.command('setpermission', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = {
+            id: ctx.message.from.id,
+            username: ctx.message.from.username,
+            firstName: ctx.message.from.first_name,
+            language: "en",
+            joined: new Date(),
+            reputation: 0
+        }
+        await updateIndex(data)
+    }
+    let permissions = {}
+    const admins = await ctx.getChatAdministrators()
+    if (data.admins.includes(ctx.message.from.id) || admins) {
+        const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
+        const permission = ctx.message.reply_to_message ? ctx.message.text.split(" ")[1] : ctx.message.text.split(" ")[2]
+        const val = ctx.message.reply_to_message ? ctx.message.text.split(" ")[2] : ctx.message.text.split(" ")[3]
+        permissions[permission] = Boolean(val)
+        try {
+            await ctx.restrictChatMember(userId, { permissions })
+            ctx.reply(`Успех при смене прав ${userId}!`)
+        } catch (e) {
+            ctx.reply(`Error with set permissions user chat member: ${e.message}`)
+            console.error(e)
+        }
     }
 })
 
