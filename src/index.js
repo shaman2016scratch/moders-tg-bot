@@ -34,14 +34,15 @@ bot.command('help', async (ctx) => {
         await updateIndex(data)
     }
     ctx.reply(`<b>Команды:</b>
-        /info [id] - информация о выбранном пользователе
-        /me - ваша информация
-        /ban - заблокировать пользователя
-        /unban - разблокировать пользователя
-        /mute - запретить пользователю писать
-        /unmute - разрешить пользователю писать
-        /setpermission - изменить права пользователя
-        Исходный код: https://github.com/shaman2016scratch/moders-tg-bot`, { parse_mode: "HTML" })
+/info [id] - информация о выбранном пользователе
+/me - ваша информация
+/ban - заблокировать пользователя
+/unban - разблокировать пользователя
+/mute - запретить пользователю писать
+/unmute - разрешить пользователю писать
+/setpermission - изменить права пользователя
+Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
+    `, { parse_mode: "HTML" })
 })
 
 bot.command('info', async (ctx) => {
