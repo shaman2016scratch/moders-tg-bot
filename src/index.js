@@ -2,6 +2,7 @@ import { Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
 import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
+import { ModersString } from './types.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
 import dotenv from 'dotenv'
@@ -558,7 +559,7 @@ bot.command('send', async (ctx) => {
     }
     if (data.trusted_users.includes(ctx.message.from.id)) {
         try {
-            const mess = ctx.message.text.replace("/send", "")
+            const mess = new ModersString(ctx.message.text.replace("/send", "")).replaceDate()
             ctx.reply(mess, { parse_mode: "HTML" })
         } catch (e) {
             console.error(`USER_ID:${ctx.message.from.id} COMMAND:/SEND ERROR:`)
