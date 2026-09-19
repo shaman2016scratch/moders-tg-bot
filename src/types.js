@@ -35,6 +35,43 @@ class ModersString extends String {
     }
 }
 
+class ModersNumber extends Number {
+    #num = 0
+
+    constructor (num) {
+        super(num)
+        this.#num = num
+    }
+
+    toBoolean () {
+        return Boolean(this.#num)
+    }
+
+    toHex () {
+        return this.#num.toString(16)
+    }
+
+    toBin () {
+        return this.#num.toString(2)
+    }
+
+    fromHex () {
+        return parseInt(this.#num, 16)
+    }
+
+    fromBin () {
+        return parseInt(this.#num, 2)
+    }
+
+    static bin (num) {
+        return num.toString(2)
+    }
+
+    static hex (num) {
+        return num.toString(16)
+    }
+}
+
 class ModersArray extends Array {
     #arr = undefined
 
@@ -95,6 +132,7 @@ class ModersObject extends Object {
 
 export {
     ModersString,
+    ModersNumber,
     ModersArray,
     ModersObject
 }

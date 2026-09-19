@@ -2,7 +2,7 @@ import { Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
 import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
-import { ModersString } from './types.js'
+import { ModersString, ModersArray } from './types.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
 import dotenv from 'dotenv'
@@ -469,8 +469,8 @@ bot.command('top', async (ctx) => {
         }
         await updateIndex(data)
     }
-    const userArray = Object.values(data.users)
-    const sortedUsers = userArray.toSorted((a, b) => b.reputation - a.reputation)
+    const userArray = new ModersArray(Object.values(data.users))
+    const sortedUsers = userArray.sortTop()
     const mapTop = sortedUsers.map((element) => { return `<a href="https://t.me/${element.username}">${element.username}</a> (${element.reputation})` })
     ctx.reply(`<b>Топ пользователей по репутации:</b>
 1. ${mapTop[0]}
