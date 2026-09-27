@@ -469,15 +469,13 @@ bot.command('top', async (ctx) => {
         }
         await updateIndex(data)
     }
+    const count123 = Math.min(8, Math.max(3, ctx.message.text.split(" ")[1] || 5))
     const userArray = new ModersArray(Object.values(data.users))
     const sortedUsers = userArray.sortTop()
-    const mapTop = sortedUsers.map((element) => { return `<a href="https://t.me/${element.username}">${element.username}</a> (${element.reputation})` })
+    const mapTop = sortedUsers.map((element, index) => { return `${index+1}. <a href="https://t.me/${element.username}">${element.username}</a> (${element.reputation})` })
+    const topWithCount = mapTop.slice(0, count123)
     ctx.reply(`<b>Топ пользователей по репутации:</b>
-1. ${mapTop[0]}
-2. ${mapTop[1]}
-3. ${mapTop[2]}
-4. ${mapTop[3]}
-5. ${mapTop[4]}
+${topWithCount.join("\n")}
     `, { parse_mode: "HTML" })
 })
 
