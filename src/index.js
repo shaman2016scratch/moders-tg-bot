@@ -3,7 +3,7 @@ import { message } from 'telegraf/filters'
 import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
 import { ModersString, ModersArray } from './types.js'
-import { getStartUserObject } from './templaces.js'
+import { getStartUserObject, getReplyStartUserObject } from './templaces.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
 import dotenv from 'dotenv'
@@ -104,7 +104,7 @@ bot.hears('+', async (ctx) => {
     }
     if (ctx.message.reply_to_message) {
         if (!Object.keys(data.users).includes(ctx.message.reply_to_message.from.id.toString())) {
-            data.users[ctx.message.reply_to_message.from.id.toString()] = getStartUserObject(ctx)
+            data.users[ctx.message.reply_to_message.from.id.toString()] = getReplyStartUserObject(ctx)
             await updateIndex(data)
         }
         if (ctx.message.reply_to_message.from.id !== ctx.message.from.id || data.admins.includes(ctx.message.from.id)) {
@@ -127,7 +127,7 @@ bot.hears('-', async (ctx) => {
     }
     if (ctx.message.reply_to_message) {
         if (!Object.keys(data.users).includes(ctx.message.reply_to_message.from.id.toString())) {
-            data.users[ctx.message.reply_to_message.from.id.toString()] = getStartUserObject(ctx)
+            data.users[ctx.message.reply_to_message.from.id.toString()] = getReplyStartUserObject(ctx)
             await updateIndex(data)
         }
         data.users[ctx.message.reply_to_message.from.id.toString()].reputation--
