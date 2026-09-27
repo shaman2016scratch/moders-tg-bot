@@ -404,7 +404,14 @@ bot.command('dashproject', async (ctx) => {
             name: await DashAttach.info.projects.getName(projectId),
             url: await DashAttach.info.projects.getFileURL(projectId)
         }
-        ctx.reply(`<b>Проект <a href="https://dashblocks.org/#${projectId}">${info.name}</a></b>\n${emoji.views}${info.views} ${emoji.forks}${info.forks} ${info.fires}${emoji.fires}\n\n<b>Автор: </b><a href="https://dashblocks.org/user#${info.author}">${info.author}</a>\n<b>Описание: </b>${info.description}\n\nСкачать: ${info.url}`, { parse_mode: "HTML" })
+        ctx.reply(`<b>Проект <a href="https://dashblocks.org/#${projectId}">${info.name}</a></b>
+${emoji.views}${info.views} ${emoji.forks}${info.forks} ${info.fires}${emoji.fires}
+
+<b>Автор: </b><a href="https://dashblocks.org/user#${info.author}">${info.author}</a>
+<b>Описание: </b>${info.description.replaceAll(/@([\w-]+)/g, (match, group) => `<a href='https://dashblocks.org/user#${group.replace(/\s/g, '')}'>${match.replace("@", "u")}</a>`)}
+
+Скачать: ${info.url}
+        `, { parse_mode: "HTML" })
     } catch (e) {
         ctx.reply(`Error with get dash project info: ${e.message}`)
         console.error(e)
@@ -446,8 +453,9 @@ bot.command('dashuser', async (ctx) => {
             ))
         ctx.reply(`
 <b>Пользователь <a href="https://dashblocks.org/user#${info.id}">${info.username}</a></b> <b>${formatRole}</b>
-${emoji.followers}${info.followers} подписчиков, ${emoji.following} подписана на ${info.following}\n
-<b>Описание: </b>${info.description}
+${emoji.followers}${info.followers} подписчиков, ${emoji.following} подписана на ${info.following}
+
+<b>Описание: </b>${info.description.replaceAll(/@([\w-]+)/g, (match, group) => `<a href='https://dashblocks.org/user#${group.replace(/\s/g, '')}'>${match.replace("@", "u")}</a>`)}
 <b>Рекомендуемый проект</b>: <a href="https://dashblocks.org/#${info.featured.id}">${info.featured.name}</a>
         `, { parse_mode: "HTML" })
     } catch (e) {
