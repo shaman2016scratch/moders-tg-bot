@@ -3,7 +3,7 @@ import { message } from 'telegraf/filters'
 import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
 import { ModersString, ModersArray } from './types.js'
-import { getStartUserObject, getReplyStartUserObject } from './templaces.js'
+import { getStartUserObject, getReplyStartUserObject, getStartChatObject } from './templaces.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
 import dotenv from 'dotenv'
@@ -41,6 +41,14 @@ bot.command('start', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     await ctx.reply(`Добро пожаловать в Модерс Бота!
 Отправьте /help для получения помощи по боту.
     `, { parse_mode: "HTML" })
@@ -66,6 +74,14 @@ bot.command('help', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     ctx.reply(`<b>Команды:</b>
 /info [id] - информация о выбранном пользователе
 /me - ваша информация
@@ -87,6 +103,14 @@ bot.command('info', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ct)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     const userId = ctx.message.text.replace("/info ", "")
     const user = data.users[userId.toString()]
     if (user) {
@@ -100,6 +124,14 @@ bot.hears('+', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     if (ctx.message.reply_to_message) {
@@ -125,6 +157,14 @@ bot.hears('-', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     if (ctx.message.reply_to_message) {
         if (!Object.keys(data.users).includes(ctx.message.reply_to_message.from.id.toString())) {
             data.users[ctx.message.reply_to_message.from.id.toString()] = getReplyStartUserObject(ctx)
@@ -144,6 +184,14 @@ bot.command('me', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     const userId = ctx.message.from.id
     const user = data.users[userId.toString()]
     ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id || 0}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
@@ -153,6 +201,14 @@ bot.command('addbotadmin', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     if (data.admins.includes(ctx.message.from.id)) {
@@ -168,6 +224,14 @@ bot.command('setreputation', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     if (data.admins.includes(ctx.message.from.id)) {
         const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
         const rep = ctx.message.reply_to_message ? Number(ctx.message.text.split(" ")[1]) : Number(ctx.message.text.split(" ")[2])
@@ -180,6 +244,14 @@ bot.command('ban', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     const admins = await ctx.getChatAdministrators()
@@ -202,6 +274,14 @@ bot.command('unban', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     const admins = await ctx.getChatAdministrators()
     if (data.admins.includes(ctx.message.from.id) || admins) {
         const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
@@ -219,6 +299,14 @@ bot.command('mute', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     const admins = await ctx.getChatAdministrators()
@@ -240,6 +328,14 @@ bot.command('unmute', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     const admins = await ctx.getChatAdministrators()
     if (data.admins.includes(ctx.message.from.id) || admins) {
         const userId = ctx.message.reply_to_message ? ctx.message.reply_to_message.from.id : ctx.message.text.split(" ")[1]
@@ -257,6 +353,14 @@ bot.command('setpermission', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     let permissions = {}
@@ -280,6 +384,14 @@ bot.command('dashproject', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     const projectId = ctx.message.text.split(" ")[1]
@@ -311,6 +423,14 @@ bot.command('dashuser', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     const userId = ctx.message.text.split(" ")[1]
@@ -352,6 +472,14 @@ bot.command('top', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     const count123 = Math.min(8, Math.max(3, ctx.message.text.split(" ")[1] || 5))
     const userArray = new ModersArray(Object.values(data.users))
     const sortedUsers = userArray.sortTop()
@@ -366,6 +494,14 @@ bot.command('ref', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     if (!Object.keys(data.referal_system).includes(ctx.message.from.id.toString())) {
@@ -392,6 +528,14 @@ bot.command('users', async (ctx) => {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
     const userArray = Object.values(data.users)
     const sortedUsers = userArray.toSorted((a, b) => b.reputation - a.reputation)
     const mapTop = sortedUsers.map((element) => { return `<a href="https://t.me/${element.username}">${element.username}</a> (${element.reputation})` })
@@ -408,6 +552,8 @@ bot.command('users', async (ctx) => {
 10. ${mapTop[9]}
 11. ${mapTop[10]}
 12. ${mapTop[11]}
+13. ${mapTop[12]}
+14. ${mapTop[13]}
     `, { parse_mode: "HTML" })
 })
 
@@ -415,6 +561,14 @@ bot.command('send', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
         data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
     if (data.trusted_users.includes(ctx.message.from.id)) {
@@ -431,6 +585,32 @@ bot.command('send', async (ctx) => {
     } else {
         ctx.reply("Тебе не нельзя")
     }
+})
+
+bot.command('chattop', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    const count123 = Math.min(8, Math.max(3, ctx.message.text.split(" ")[1] || 5))
+    const botUsers = data.users
+    const groupUsers = data.chats[ctx.message.chat.id.toString()].members
+    const userArray = new ModersArray(groupUsers.map((userId) => { return botUsers[userId] }))
+    const sortedUsers = userArray.sortTop()
+    const mapTop = sortedUsers.map((element, index) => { return `${index+1}. <a href="https://t.me/${element.username}">${element.username}</a> (${element.reputation})` })
+    const topWithCount = mapTop.slice(0, count123)
+    ctx.reply(`<b>Топ пользователей чата ${data.chats[ctx.message.chat.id.toString()].firstName} по репутации:</b>
+${topWithCount.join("\n")}
+    `, { parse_mode: "HTML" })
 })
 
 bot.launch()

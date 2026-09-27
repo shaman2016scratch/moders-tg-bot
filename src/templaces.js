@@ -22,4 +22,17 @@ const getReplyStartUserObject = (ctx) => {
     }
 }
 
-export { getStartUserObject, getReplyStartUserObject }
+const getStartChatObject = (ctx) => {
+    return {
+        firstName: ctx.message.chat.first_name,
+        username: ctx.message.chat.username,
+        id: ctx.message.chat.id,
+        type: ctx.message.chat.type,
+        members: [
+            ctx.message.from.id.toString()
+        ],
+        inBotAt: new Date()
+    }
+}
+
+export { getStartUserObject, getReplyStartUserObject, getStartChatObject }
