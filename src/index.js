@@ -3,6 +3,7 @@ import { message } from 'telegraf/filters'
 import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
 import { ModersString, ModersArray } from './types.js'
+import { getStartUserObject } from './templaces.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
 import dotenv from 'dotenv'
@@ -37,20 +38,13 @@ log("Бот запущен")
 bot.command('start', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     await ctx.reply(`Добро пожаловать в Модерс Бота!
 Отправьте /help для получения помощи по боту.
     `, { parse_mode: "HTML" })
-    if (ctx.message.text.split(" ")[1].split("=")[0] === "ref") {
+    if (ctx.message.text.split(" ")[1]) if (ctx.message.text.split(" ")[1].split("=")[0] === "ref") {
         if (!data.users[ctx.message.from.id.toString()].ref) {
             const refer = ctx.message.text.split(" ")[1].split("=")[1]
             if (Object.keys(data.referal_system).includes(refer)) {
@@ -69,14 +63,7 @@ bot.command('start', async (ctx) => {
 bot.command('help', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     ctx.reply(`<b>Команды:</b>
@@ -97,14 +84,7 @@ bot.command('help', async (ctx) => {
 bot.command('info', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ct)
         await updateIndex(data)
     }
     const userId = ctx.message.text.replace("/info ", "")
@@ -119,26 +99,12 @@ bot.command('info', async (ctx) => {
 bot.hears('+', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     if (ctx.message.reply_to_message) {
         if (!Object.keys(data.users).includes(ctx.message.reply_to_message.from.id.toString())) {
-            data.users[ctx.message.reply_to_message.from.id.toString()] = {
-                id: ctx.message.reply_to_message.from.id,
-                username: ctx.message.reply_to_message.from.username,
-                firstName: ctx.message.reply_to_message.from.first_name,
-                language: "en",
-                joined: new Date(),
-                reputation: 0
-            }
+            data.users[ctx.message.reply_to_message.from.id.toString()] = getStartUserObject(ctx)
             await updateIndex(data)
         }
         if (ctx.message.reply_to_message.from.id !== ctx.message.from.id || data.admins.includes(ctx.message.from.id)) {
@@ -156,26 +122,12 @@ bot.hears('+', async (ctx) => {
 bot.hears('-', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     if (ctx.message.reply_to_message) {
         if (!Object.keys(data.users).includes(ctx.message.reply_to_message.from.id.toString())) {
-            data.users[ctx.message.reply_to_message.from.id.toString()] = {
-                id: ctx.message.reply_to_message.from.id,
-                username: ctx.message.reply_to_message.from.username,
-                firstName: ctx.message.reply_to_message.from.first_name,
-                language: "en",
-                joined: new Date(),
-                reputation: 0
-            }
+            data.users[ctx.message.reply_to_message.from.id.toString()] = getStartUserObject(ctx)
             await updateIndex(data)
         }
         data.users[ctx.message.reply_to_message.from.id.toString()].reputation--
@@ -189,14 +141,7 @@ bot.hears('-', async (ctx) => {
 bot.command('me', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const userId = ctx.message.from.id
@@ -207,14 +152,7 @@ bot.command('me', async (ctx) => {
 bot.command('addbotadmin', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     if (data.admins.includes(ctx.message.from.id)) {
@@ -227,14 +165,7 @@ bot.command('addbotadmin', async (ctx) => {
 bot.command('setreputation', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     if (data.admins.includes(ctx.message.from.id)) {
@@ -248,14 +179,7 @@ bot.command('setreputation', async (ctx) => {
 bot.command('ban', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const admins = await ctx.getChatAdministrators()
@@ -275,14 +199,7 @@ bot.command('ban', async (ctx) => {
 bot.command('unban', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const admins = await ctx.getChatAdministrators()
@@ -301,14 +218,7 @@ bot.command('unban', async (ctx) => {
 bot.command('mute', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const admins = await ctx.getChatAdministrators()
@@ -327,14 +237,7 @@ bot.command('mute', async (ctx) => {
 bot.command('unmute', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const admins = await ctx.getChatAdministrators()
@@ -353,14 +256,7 @@ bot.command('unmute', async (ctx) => {
 bot.command('setpermission', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     let permissions = {}
@@ -383,14 +279,7 @@ bot.command('setpermission', async (ctx) => {
 bot.command('dashproject', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const projectId = ctx.message.text.split(" ")[1]
@@ -421,14 +310,7 @@ ${emoji.views}${info.views} ${emoji.forks}${info.forks} ${info.fires}${emoji.fir
 bot.command('dashuser', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const userId = ctx.message.text.split(" ")[1]
@@ -467,14 +349,7 @@ ${emoji.followers}${info.followers} подписчиков, ${emoji.following} �
 bot.command('top', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const count123 = Math.min(8, Math.max(3, ctx.message.text.split(" ")[1] || 5))
@@ -490,14 +365,7 @@ ${topWithCount.join("\n")}
 bot.command('ref', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     if (!Object.keys(data.referal_system).includes(ctx.message.from.id.toString())) {
@@ -521,14 +389,7 @@ bot.command('ref', async (ctx) => {
 bot.command('users', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     const userArray = Object.values(data.users)
@@ -553,14 +414,7 @@ bot.command('users', async (ctx) => {
 bot.command('send', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = {
-            id: ctx.message.from.id,
-            username: ctx.message.from.username,
-            firstName: ctx.message.from.first_name,
-            language: "en",
-            joined: new Date(),
-            reputation: 0
-        }
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     if (data.trusted_users.includes(ctx.message.from.id)) {
