@@ -3,7 +3,7 @@ class ModersString extends String {
 
     constructor (str) {
         super(str)
-        this.#str = str
+        this.#str = String(str)
     }
 
     toNumber () {
@@ -34,8 +34,16 @@ class ModersString extends String {
             .replaceAll("{{nanosecond}}", new Date().getSeconds() / (1 * 1000 * 1000 * 1000))
     }
 
+    get type () {
+        return "modersstring"
+    }
+
+    toString () {
+        return String(this.#str)
+    }
+
     static isModersString (val) {
-        return val === new ModersString(val)
+        return val.type === new ModersString(val).type
     }
 }
 
@@ -44,7 +52,7 @@ class ModersNumber extends Number {
 
     constructor (num) {
         super(num)
-        this.#num = num
+        this.#num = Number(num)
     }
 
     toBoolean () {
@@ -67,6 +75,18 @@ class ModersNumber extends Number {
         return parseInt(this.#num, 2)
     }
 
+    get type () {
+        return "modersnumber"
+    }
+
+    toNumber () {
+        return Number(this.#num)
+    }
+
+    toString () {
+        return String(this.#num)
+    }
+
     static bin (num) {
         return num.toString(2)
     }
@@ -76,7 +96,7 @@ class ModersNumber extends Number {
     }
 
     static isModersNumber (val) {
-        return val === new ModersNumber(val)
+        return val.type === new ModersNumber(val).type
     }
 }
 
@@ -85,7 +105,7 @@ class ModersArray extends Array {
 
     constructor (arr) {
         super(arr)
-        this.#arr = arr
+        this.#arr = Array(arr)
     }
 
     toObject () {
@@ -97,8 +117,20 @@ class ModersArray extends Array {
         return sortedArr
     }
 
+    get type () {
+        return "modersarray"
+    }
+
+    toArray () {
+        return String(this.#arr)
+    }
+
+    toString () {
+        return String(this.#arr)
+    }
+
     static isModersArray (val) {
-        return val === new ModersArray(val)
+        return val.type === new ModersArray(val).type
     }
 }
 
@@ -107,7 +139,7 @@ class ModersObject extends Object {
 
     constructor (obj) {
         super(obj)
-        this.#obj = obj
+        this.#obj = Object(obj)
     }
 
     toMap () {
@@ -141,8 +173,20 @@ class ModersObject extends Object {
         return this.#obj
     }
 
+    get type () {
+        return "modersobject"
+    }
+
+    toObject () {
+        return Object(this.#obj)
+    }
+
+    toString () {
+        return String(this.#obj)
+    }
+
     static isModersObject (val) {
-        return val === new ModersObject(val)
+        return val.type === new ModersObject(val).type
     }
 }
 

@@ -41,8 +41,8 @@ const ModersCast = (type, val) => {
     return (type === "string") ? String(val) : (
         (type === "number") ? Number(val) : (
             (type === "boolean") ? Boolean(val) : (
-                (type === "object") ? Object(val) : (
-                    (type === "array") ? Array(val) : (
+                (type === "object") ? ( (val.type === "modersobject") ? val.toObject() : Object(val) ) : (
+                    (type === "array") ? ( (val.type === "modersarray") ? val.toArray() : Array(val) ) : (
                         (type === "modersobject") ? new ModersObject(val) : (
                             (type === "modersarray") ? new ModersArray(val) : null
                         )
