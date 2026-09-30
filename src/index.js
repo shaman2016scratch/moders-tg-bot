@@ -517,7 +517,7 @@ bot.command('ref', async (ctx) => {
     const botInfo = await bot.telegram.getMe()
     const botUsername = botInfo.username
     await ctx.reply(`Реферальная система
-Количество реферальщиков: ${data.referal_system[ctx.message.from.id.toString()].activates.lenght}
+Количество реферальщиков: ${data.referal_system[ctx.message.from.id.toString()].activates.length}
 
 Твоя ссылка: https://t.me/${botUsername}?start=ref=${ctx.message.from.id}
     `, { parse_mode: "HTML" })
