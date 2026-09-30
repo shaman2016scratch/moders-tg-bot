@@ -93,7 +93,9 @@ bot.command('help', async (ctx) => {
 /setpermission [user] [permission] [value (true/false строчными)] - изменить права пользователя
 /dashproject [id] - получить проект на <a href="https://dashblocks.org">Dash</a>
 /dashuser [id/username] - получить пользователя на <a href="https://dashblocks.org">Dash</a>
-/top - топ пользователей по репутации
+/top [size] - топ пользователей по репутации
+/ref - реферальная система
+/chattop [size] - топ пользователей чата по репутации
 Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
     `, { parse_mode: "HTML" })
 })
@@ -602,7 +604,7 @@ bot.command('chattop', async (ctx) => {
         data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
-    const count123 = Math.min(8, Math.max(3, ctx.message.text.split(" ")[1] || 5))
+    const count123 = MaxMin(ctx.message.text.split(" ")[1] || 5, 10, 3)
     const botUsers = data.users
     const groupUsers = data.chats[ctx.message.chat.id.toString()].members
     const userArray = new ModersArray(groupUsers.map((userId) => { return botUsers[userId] }))
