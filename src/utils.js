@@ -1,9 +1,16 @@
+import { ModersArray, ModersObject } from "./types.js"
+
 const MaxMin = (num, max, min) => {
     return Math.min(max, Math.max(min, num))
 }
 
 const getType = (val) => {
-    return (typeof val === typeof {}) ? (Array.isArray(val) ? "array" : "object") : typeof val
+    return (typeof val === typeof {}) ? (
+        ModersArray.isModersArray(val) ? "modersarray" : 
+            (ModersObject.isModersObject(val) ? "modersobject" : 
+                (Array.isArray(val) ? "array" : "object")
+            )
+    ) : typeof val
 }
 
 const ModersCasts = {
@@ -21,6 +28,12 @@ const ModersCasts = {
     },
     toObject (val) {
         return Object(val)
+    },
+    toModersArray (val) {
+        return new ModersArray(val)
+    },
+    toModersObject (val) {
+        return new ModersObject(val)
     }
 }
 
@@ -29,7 +42,11 @@ const ModersCast = (type, val) => {
         (type === "number") ? Number(val) : (
             (type === "boolean") ? Boolean(val) : (
                 (type === "object") ? Object(val) : (
-                    (type === "array") ? Array(val) : null
+                    (type === "array") ? Array(val) : (
+                        (type === "modersobject") ? new ModersObject(val) : (
+                            (type === "modersarray") ? new ModersArray(val) : null
+                        )
+                    )
                 )
             )
         )

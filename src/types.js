@@ -33,6 +33,10 @@ class ModersString extends String {
             .replaceAll("{{millisecond}}", new Date().getMilliseconds())
             .replaceAll("{{nanosecond}}", new Date().getSeconds() / (1 * 1000 * 1000 * 1000))
     }
+
+    static isModersString (val) {
+        return val === new ModersString(val)
+    }
 }
 
 class ModersNumber extends Number {
@@ -70,6 +74,10 @@ class ModersNumber extends Number {
     static hex (num) {
         return num.toString(16)
     }
+
+    static isModersNumber (val) {
+        return val === new ModersNumber(val)
+    }
 }
 
 class ModersArray extends Array {
@@ -84,9 +92,13 @@ class ModersArray extends Array {
         return Object(this.#arr)
     }
 
-    sortTop (val) {
+    sortTop () {
         const sortedArr = this.#arr.toSorted((a, b) => b.reputation - a.reputation)
         return sortedArr
+    }
+
+    static isModersArray (val) {
+        return val === new ModersArray(val)
     }
 }
 
@@ -127,6 +139,10 @@ class ModersObject extends Object {
     delete (k) {
         delete this.#obj[k]
         return this.#obj
+    }
+
+    static isModersObject (val) {
+        return val === new ModersObject(val)
     }
 }
 
