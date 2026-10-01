@@ -105,7 +105,7 @@ class ModersArray extends Array {
 
     constructor (arr) {
         super(arr)
-        this.#arr = Array(arr)
+        this.#arr = new Array(arr)
     }
 
     toObject () {
@@ -122,11 +122,15 @@ class ModersArray extends Array {
     }
 
     toArray () {
-        return String(this.#arr)
+        return Array(this.#arr)
     }
 
     toString () {
         return String(this.#arr)
+    }
+
+    get sec () {
+        return this.#arr
     }
 
     static isModersArray (val) {
