@@ -105,7 +105,7 @@ class ModersArray extends Array {
 
     constructor (arr) {
         super(arr)
-        this.#arr = new Array(arr)
+        this.#arr = Array.from(arr)
     }
 
     toObject () {
