@@ -96,6 +96,8 @@ bot.command('help', async (ctx) => {
 /top [size] - топ пользователей по репутации
 /ref - реферальная система
 /chattop [size] - топ пользователей чата по репутации
+/chat [id] - информация о чате
+/thischat - id этого чата
 Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
     `, { parse_mode: "HTML" })
 })
@@ -103,7 +105,7 @@ bot.command('help', async (ctx) => {
 bot.command('info', async (ctx) => {
     const data = await getIndex()
     if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = getStartUserObject(ct)
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
         await updateIndex(data)
     }
     if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
@@ -613,6 +615,48 @@ bot.command('chattop', async (ctx) => {
     const topWithCount = mapTop.slice(0, count123)
     ctx.reply(`<b>Топ пользователей чата ${data.chats[ctx.message.chat.id.toString()].firstName} по репутации:</b>
 ${topWithCount.join("\n")}
+    `, { parse_mode: "HTML" })
+})
+
+bot.command('chat', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    const chatId = ctx.message.text.replace("/chat ", "")
+    const chat = data.chats[chatId.toString()]
+    if (chat) {
+        ctx.reply(`<b>Информация о чате</b>\nID: ${chat.id || 0}\nUsername: ${chat.username}\nИмя: ${chat.firstName}\nВ боте с ${new Date(chat.inBotAt)}\nРейтинг: ${chat.rating}`, { parse_mode: "HTML" })
+    } else {
+        ctx.reply(`Чата не существует`)
+    }
+})
+
+bot.command('thischat', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    ctx.reply(`<b>Информация о этом чате</b>
+ID: ${ctx.message.chat.id}
     `, { parse_mode: "HTML" })
 })
 

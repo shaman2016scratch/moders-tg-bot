@@ -7,7 +7,8 @@ const getStartUserObject = (ctx) => {
         firstName: ctx.message.from.first_name,
         language: "en",
         joined: new Date(),
-        reputation: 0
+        reputation: 0,
+        modersgamecoins: 0
     }
 }
 
@@ -18,20 +19,22 @@ const getReplyStartUserObject = (ctx) => {
         firstName: ctx.message.reply_to_message.from.first_name,
         language: "en",
         joined: new Date(),
-        reputation: 0
+        reputation: 0,
+        modersgamecoins: 0
     }
 }
 
 const getStartChatObject = (ctx) => {
     return {
-        firstName: ctx.message.chat.first_name,
-        username: ctx.message.chat.username,
+        firstName: ctx.message.chat.first_name || ctx.message.chat.title,
+        username: ctx.message.chat.username || "unknown",
         id: ctx.message.chat.id,
         type: ctx.message.chat.type,
         members: [
             ctx.message.from.id.toString()
         ],
-        inBotAt: new Date()
+        inBotAt: new Date(),
+        rating: 0
     }
 }
 
