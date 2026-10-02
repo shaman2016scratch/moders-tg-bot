@@ -117,6 +117,11 @@ class ModersArray extends Array {
         return sortedArr
     }
 
+    sortTop2 () {
+        const sortedArr = this.#arr.toSorted((a, b) => Number(b.modersgamecoin) - Number(a.modersgamecoin))
+        return sortedArr
+    }
+
     get type () {
         return "modersarray"
     }

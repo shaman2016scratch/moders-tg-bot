@@ -53,11 +53,44 @@ const ModersCast = (type, val) => {
     )
 }
 
+const formatDate = (d, t) => {
+    d = new Date(d)
+    const days = [
+        "ПН",
+        "ВТ",
+        "СР",
+        "ЧТ",
+        "ПТ",
+        "СБ",
+        "ВС"
+    ]
+    switch (t) {
+        case 0:
+            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}.${d.getFullYear().toString().padStart(2, 0)} ${d.getHours().toString().padStart(2, 0)}:${d.getMinutes().toString().padStart(2, 0)}`
+        case 1:
+            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}.${d.getFullYear().toString().padStart(2, 0)} ${d.getHours().toString().padStart(2, 0)}:${d.getMinutes().toString().padStart(2, 0)}:${d.getMilliseconds().toString().padStart(2, 0)}`
+        case 2:
+            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}.${d.getFullYear().toString().padStart(2, 0)}`
+        case 3:
+            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}`
+        case 4:
+            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}.${d.getFullYear().toString().padStart(2, 0)} ${days[d.getDay()]}`
+        default:
+            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}.${d.getFullYear().toString().padStart(2, 0)} ${d.getHours().toString().padStart(2, 0)}:${d.getMinutes().toString().padStart(2, 0)}`
+    }
+}
+
+const random = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 const ModersUtils = {
     MaxMin,
     getType,
     ModersCasts,
-    ModersCast
+    ModersCast,
+    formatDate,
+    random
 }
 
 export {
@@ -65,5 +98,7 @@ export {
     ModersUtils as default,
     getType,
     ModersCasts,
-    ModersCast
+    ModersCast,
+    formatDate,
+    random
 }

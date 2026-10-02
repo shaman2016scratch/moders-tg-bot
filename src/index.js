@@ -4,7 +4,7 @@ import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
 import { ModersString, ModersArray } from './types.js'
 import { getStartUserObject, getReplyStartUserObject, getStartChatObject } from './templaces.js'
-import { MaxMin } from './utils.js'
+import { MaxMin, formatDate, random } from './utils.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
 import dotenv from 'dotenv'
@@ -99,6 +99,7 @@ bot.command('help', async (ctx) => {
 /chat [id] - информация о чате
 /thischat - информация о этом чате
 /dashstudio [id] - информация о студии на <a href="https://dashblocks.org">Dash</a>
+/time [type] [timecode] - время
 
 Версия DashAttach: ${DashAttach.library.version}
 Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
@@ -122,7 +123,13 @@ bot.command('info', async (ctx) => {
     const userId = ctx.message.text.replace("/info ", "")
     const user = data.users[userId.toString()]
     if (user) {
-        ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id || 0}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
+        ctx.reply(`<b>Информация о пользователе</b>
+ID: ${user.id || 0}
+Username: ${user.username}
+Имя: ${user.firstName}
+В боте с ${formatDate(user.joined)}
+Репутация: ${user.reputation}
+        `, { parse_mode: "HTML" })
     } else {
         ctx.reply(`Пользователя не существует`)
     }
@@ -202,7 +209,13 @@ bot.command('me', async (ctx) => {
     }
     const userId = ctx.message.from.id
     const user = data.users[userId.toString()]
-    ctx.reply(`<b>Информация о пользователе</b>\nID: ${user.id || 0}\nUsername: ${user.username}\nИмя: ${user.firstName}\nВ боте с ${new Date(user.joined)}\nРепутация: ${user.reputation}`, { parse_mode: "HTML" })
+    ctx.reply(`<b>Информация о пользователе</b>
+ID: ${user.id || 0}
+Username: ${user.username}
+Имя: ${user.firstName}
+В боте с ${formatDate(user.joined)}
+Репутация: ${user.reputation}
+    `, { parse_mode: "HTML" })
 })
 
 bot.command('addbotadmin', async (ctx) => {
@@ -643,7 +656,13 @@ bot.command('chat', async (ctx) => {
     const chatId = ctx.message.text.replace("/chat ", "")
     const chat = data.chats[chatId.toString()]
     if (chat) {
-        ctx.reply(`<b>Информация о чате</b>\nID: ${chat.id || 0}\nUsername: ${chat.username}\nИмя: ${chat.firstName}\nВ боте с ${new Date(chat.inBotAt)}\nРейтинг: ${chat.rating}`, { parse_mode: "HTML" })
+        ctx.reply(`<b>Информация о чате</b>
+ID: ${chat.id || 0}
+Username: ${chat.username}
+Имя: ${chat.firstName}
+В боте с ${formatDate(chat.inBotAt, 0)}
+Рейтинг: ${chat.rating}
+        `, { parse_mode: "HTML" })
     } else {
         ctx.reply(`Чата не существует`)
     }
@@ -691,21 +710,133 @@ bot.command('dashstudio', async (ctx) => {
             updatedAt: new Date(await DashAttach.info.studios.updatedAt(studioId)),
             owner: await DashAttach.info.studios.getOwner(studioId)
         }
-        const formatDate = (d) => {
-            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}.${d.getFullYear().toString().padStart(2, 0)} ${d.getHours().toString().padStart(2, 0)}:${d.getMinutes().toString().padStart(2, 0)}`
-        }
         ctx.reply(`
 <b>Студия <a href="https://dashblocks.org/studio#${studioId}">${info.name}</a></b>
 
 <b>Описание: </b>${info.description.replaceAll(/@([\w-]+)/g, (match, group) => `<a href='https://dashblocks.org/user#${group.replace(/\s/g, '')}'>${match.replace("@", "u")}</a>`)}
 <b>Автор:</b> <a href="https://dashblocks.org/user#${info.owner.id}">${info.owner.username}</a>
-<b>Создана: </b>${formatDate(info.createdAt)}
-<b>Обновлена: </b>${formatDate(info.updatedAt)}
+<b>Создана: </b>${formatDate(info.createdAt, 0)}
+<b>Обновлена: </b>${formatDate(info.updatedAt, 0)}
         `, { parse_mode: "HTML" })
     } catch (e) {
         ctx.reply(`Error with get dash studio info: ${e.message}`)
         console.error(e)
     }
+})
+
+bot.command('time', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    const type = Number(ctx.message.text.split(" ")[1])
+    const timecode = Number(ctx.message.text.split(" ")[2])
+    const now = new Date()
+    ctx.reply(`<b>Время</b>
+Текущее: ${formatDate(now, type)}
+Указанное: ${formatDate(timecode, type)}
+Текущий таймкод: ${now.getTime()}
+Текстовый вариант текущего времени: ${now.toISOString()}
+Дней с 1970-ого: ${now.getTime() / 1000 / 60 / 60 / 24}
+        `, { parse_mode: "HTML" })
+})
+
+bot.command('random', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    const min = Number(ctx.message.text.split(" ")[1] || 0)
+    const max = Number(ctx.message.text.split(" ")[2] || 100)
+    const rand = random(min, max)
+    ctx.reply(`<b>Радномное значение</b>
+От ${min} до ${max}
+Всего вариантов: ${max-min+1}
+Результат: ${rand}
+        `, { parse_mode: "HTML" })
+})
+
+bot.command('game_random', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    const min = 0
+    const max = 9
+    const rand = random(min, max)
+    const rand2 = random(min, max)
+    const rand3 = random(min, max)
+    const rand4 = random(min, max)
+    const joined = [rand,rand2,rand3,rand4].join("")
+    const plus = (joined === "9999") ? 9*6 : (
+        (joined === "8787") ? 87*3 : (
+            (joined === "1234") ? 12+34+56 : (
+                (joined === "0000" || joined === "1111" || joined === "2222") ? -60 : rand+rand2+rand3+rand4
+            )
+        )
+    )
+    if (!data.users[ctx.message.from.id.toString()].modersgamecoin) data.users[ctx.message.from.id.toString()].modersgamecoin = 0
+    data.users[ctx.message.from.id.toString()].modersgamecoin += plus
+    updateIndex(data)
+    ctx.reply(`<b>Игра с рандомный значением.</b>
+Предупреждение: ModersGameCoin внутриигровая валюта никак не связанная с реальностью.
+Правила: Ваши ModersGameCoin увеличиваются на сумму выпаденных чисел. Но, комбинации 0000, 1111 и 2222 уменьшают ваши ModersGameCoin, а 9999, 1234 и 8787 - увеличивают нестандартным способом.
+${rand}${rand2}${rand3}${rand4}
+Вы получаете: ${plus} modersgamecoin
+Теперь у вас: ${data.users[ctx.message.from.id.toString()].modersgamecoin}
+До этого у вас было: ${data.users[ctx.message.from.id.toString()].modersgamecoin - plus}
+        `, { parse_mode: "HTML" })
+})
+
+bot.command('game_top', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    const count123 = MaxMin(ctx.message.text.split(" ")[1] || 5, 10, 3)
+    const userArray = new ModersArray(Object.values(data.users))
+    const sortedUsers = userArray.sortTop2()
+    const mapTop = sortedUsers.map((element, index) => { return `${index+1}. <a href="https://t.me/${element.username}">${element.username}</a> (${element.modersgamecoin})` })
+    const topWithCount = mapTop.slice(0, count123)
+    ctx.reply(`<b>Топ пользователей по ModersGameCoin:</b>
+${topWithCount.join("\n")}
+    `, { parse_mode: "HTML" })
 })
 
 bot.launch()
