@@ -101,7 +101,6 @@ bot.command('help', async (ctx) => {
 /dashstudio [id] - информация о студии на <a href="https://dashblocks.org">Dash</a>
 /time [type] [timecode] - время
 /random [min] [max]
-/game_random
 /game_top [size]
 Версия DashAttach: ${DashAttach.library.version}
 Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
@@ -773,47 +772,6 @@ bot.command('random', async (ctx) => {
 От ${min} до ${max}
 Всего вариантов: ${max-min+1}
 Результат: ${rand}
-        `, { parse_mode: "HTML" })
-})
-
-bot.command('game_random', async (ctx) => {
-    const data = await getIndex()
-    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
-        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
-        await updateIndex(data)
-    }
-    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
-        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
-        await updateIndex(data)
-    }
-    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
-        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
-        await updateIndex(data)
-    }
-    const min = 0
-    const max = 9
-    const rand = random(min, max)
-    const rand2 = random(min, max)
-    const rand3 = random(min, max)
-    const rand4 = random(min, max)
-    const joined = [rand,rand2,rand3,rand4].join("")
-    const plus = (joined === "9999") ? 9*6 : (
-        (joined === "8787") ? 87*3 : (
-            (joined === "1234") ? 12+34+56 : (
-                (joined === "0000" || joined === "1111" || joined === "2222") ? -60 : rand+rand2+rand3+rand4
-            )
-        )
-    )
-    if (!data.users[ctx.message.from.id.toString()].modersgamecoin) data.users[ctx.message.from.id.toString()].modersgamecoin = 0
-    data.users[ctx.message.from.id.toString()].modersgamecoin += plus
-    updateIndex(data)
-    ctx.reply(`<b>Игра с рандомный значением.</b>
-Предупреждение: ModersGameCoin внутриигровая валюта никак не связанная с реальностью.
-Правила: Ваши ModersGameCoin увеличиваются на сумму выпаденных чисел. Но, комбинации 0000, 1111 и 2222 уменьшают ваши ModersGameCoin, а 9999, 1234 и 8787 - увеличивают нестандартным способом.
-${rand}${rand2}${rand3}${rand4}
-Вы получаете: ${plus} modersgamecoin
-Теперь у вас: ${data.users[ctx.message.from.id.toString()].modersgamecoin}
-До этого у вас было: ${data.users[ctx.message.from.id.toString()].modersgamecoin - plus}
         `, { parse_mode: "HTML" })
 })
 
