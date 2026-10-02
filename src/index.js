@@ -687,17 +687,20 @@ bot.command('dashstudio', async (ctx) => {
         const info = {
             name: await DashAttach.info.studios.getName(studioId),
             description: await DashAttach.info.studios.getDescription(studioId),
-            createdAt: await DashAttach.info.studios.createdAt(studioId),
-            updatedAt: await DashAttach.info.studios.updatedAt(studioId),
+            createdAt: new Date(await DashAttach.info.studios.createdAt(studioId)),
+            updatedAt: new Date(await DashAttach.info.studios.updatedAt(studioId)),
             owner: await DashAttach.info.studios.getOwner(studioId)
+        }
+        const formatDate = (d) => {
+            return `${d.getDate().toString().padStart(2, 0)}.${d.getMonth().toString().padStart(2, 0)}.${d.getFullYear().toString().padStart(2, 0)} ${d.getHours().toString().padStart(2, 0)}:${d.getMinutes().toString().padStart(2, 0)}`
         }
         ctx.reply(`
 <b>Студия <a href="https://dashblocks.org/studio#${studioId}">${info.name}</a></b>
 
 <b>Описание: </b>${info.description.replaceAll(/@([\w-]+)/g, (match, group) => `<a href='https://dashblocks.org/user#${group.replace(/\s/g, '')}'>${match.replace("@", "u")}</a>`)}
 <b>Автор:</b> <a href="https://dashblocks.org/user#${info.owner.id}">${info.owner.username}</a>
-<b>Создана: </b>${info.createdAt}
-<b>Обновлена: </b>${info.updatedAt}
+<b>Создана: </b>${formatDate(info.createdAt)}
+<b>Обновлена: </b>${formatDate(info.updatedAt)}
         `, { parse_mode: "HTML" })
     } catch (e) {
         ctx.reply(`Error with get dash studio info: ${e.message}`)
