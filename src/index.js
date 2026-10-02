@@ -100,7 +100,9 @@ bot.command('help', async (ctx) => {
 /thischat - информация о этом чате
 /dashstudio [id] - информация о студии на <a href="https://dashblocks.org">Dash</a>
 /time [type] [timecode] - время
-
+/random [min] [max]
+/game_random
+/game_top [size]
 Версия DashAttach: ${DashAttach.library.version}
 Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
     `, { parse_mode: "HTML" })
