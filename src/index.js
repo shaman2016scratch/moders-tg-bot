@@ -97,7 +97,10 @@ bot.command('help', async (ctx) => {
 /ref - реферальная система
 /chattop [size] - топ пользователей чата по репутации
 /chat [id] - информация о чате
-/thischat - id этого чата
+/thischat - информация о этом чате
+/dashstudio [id] - информация о студии на <a href="https://dashblocks.org">Dash</a>
+
+Версия DashAttach: ${DashAttach.library.version}
 Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
     `, { parse_mode: "HTML" })
 })
@@ -663,6 +666,43 @@ bot.command('thischat', async (ctx) => {
     ctx.reply(`<b>Информация о этом чате</b>
 ID: ${ctx.message.chat.id}
     `, { parse_mode: "HTML" })
+})
+
+bot.command('dashstudio', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    const studioId = ctx.message.text.split(" ")[1]
+    try {
+        const info = {
+            name: await DashAttach.info.studios.getName(studioId),
+            description: await DashAttach.info.studios.getDescription(studioId),
+            createdAt: await DashAttach.info.studios.createdAt(studioId),
+            updatedAt: await DashAttach.info.studios.updatedAt(studioId),
+            owner: await DashAttach.info.studios.getOwner(studioId)
+        }
+        ctx.reply(`
+<b>Студия <a href="https://dashblocks.org/studio#${studioId}">${info.name}</a></b>
+
+<b>Описание: </b>${info.description.replaceAll(/@([\w-]+)/g, (match, group) => `<a href='https://dashblocks.org/user#${group.replace(/\s/g, '')}'>${match.replace("@", "u")}</a>`)}
+<b>Автор:</b> <a href="https://dashblocks.org/user#${info.owner.id}">${info.owner.username}</a>
+<b>Создана: </b>${info.createdAt}
+<b>Обновлена: </b>${info.updatedAt}
+        `, { parse_mode: "HTML" })
+    } catch (e) {
+        ctx.reply(`Error with get dash studio info: ${e.message}`)
+        console.error(e)
+    }
 })
 
 bot.launch()
