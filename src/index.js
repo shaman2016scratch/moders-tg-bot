@@ -765,12 +765,14 @@ bot.command('random', async (ctx) => {
         data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
-    const min = Number(ctx.message.text.split(" ")[1] || 0)
-    const max = Number(ctx.message.text.split(" ")[2] || 100)
-    const rand = random(min, max)
+    const min = ctx.message.text.split(" ")[1] || 0
+    const max = ctx.message.text.split(" ")[2] || 100
+    const minN = (min === "infinity") ? Infinity : (min === "null") ? null : (min === "pi") ? Math.PI : Number(min)
+    const maxN = (max === "infinity") ? Infinity : (max === "null") ? null : (max === "pi") ? Math.PI : Number(max)
+    const rand = random(minN, maxN)
     ctx.reply(`<b>Радномное значение</b>
 От ${min} до ${max}
-Всего вариантов: ${max-min+1}
+Всего вариантов: ${maxN-minN+1}
 Результат: ${rand}
         `, { parse_mode: "HTML" })
 })
