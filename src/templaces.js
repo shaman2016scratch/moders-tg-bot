@@ -38,4 +38,17 @@ const getStartChatObject = (ctx) => {
     }
 }
 
-export { getStartUserObject, getReplyStartUserObject, getStartChatObject }
+const getUserObject = (obj) => {
+    return {
+        id: obj.id,
+        username: obj.username || "unknown",
+        firstName: obj.firstName || "unknown",
+        language: obj.language || "en",
+        joined: new Date(obj.joined || Date.UTC(2026, 8, 6, 19, 23)),
+        reputation: obj.reputation || 0,
+        modersgamecoins: obj.modersgamecoins || 0,
+        ref: obj.ref || undefined
+    }
+}
+
+export { getStartUserObject, getReplyStartUserObject, getStartChatObject, getUserObject }
