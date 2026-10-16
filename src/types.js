@@ -120,7 +120,7 @@ class ModersArray extends Array {
     }
 
     sortTop2 () {
-        const sortedArr = this.#arr.toSorted((a, b) => getUserObject(b).modersgamecoin - getUserObject(a).modersgamecoin)
+        const sortedArr = this.#arr.toSorted((a, b) => getUserObject(b).modersgamecoins - getUserObject(a).modersgamecoins)
         return sortedArr
     }
 
