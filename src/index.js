@@ -21,7 +21,8 @@ const emoji = {
     following: "👥",
     admin: "🛡️",
     king: "👑",
-    dollar: "💲"
+    dollar: "💲",
+    star: "⭐"
 }
 
 const log = (text, parse_mode) => {
@@ -104,7 +105,7 @@ bot.command('help', async (ctx) => {
 /random [min] [max]
 /game_top [size]
 Версия DashAttach: ${DashAttach.library.version}
-Исходный код: ${repo.html_url} (${repo.stargazers_count})
+Исходный код: ${repo.html_url} (${emoji.star}${repo.stargazers_count})
     `, { parse_mode: "HTML" })
 })
 
