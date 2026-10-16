@@ -81,7 +81,18 @@ const formatDate = (d, t) => {
 }
 
 const random = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min
+    return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+const githubFetch = (path = "", param = {}) => {
+    const res = fetch(["https://github.com",path].join("/"), param)
+    return res
+}
+
+const githubRepo = async (name123) => {
+    const res = await githubFetch(`repos/${name123}`)
+    const result = await res.json()
+    return result
 }
 
 const ModersUtils = {
@@ -90,7 +101,9 @@ const ModersUtils = {
     ModersCasts,
     ModersCast,
     formatDate,
-    random
+    random,
+    githubFetch,
+    githubRepo
 }
 
 export {
@@ -100,5 +113,7 @@ export {
     ModersCasts,
     ModersCast,
     formatDate,
-    random
+    random,
+    githubFetch,
+    githubRepo
 }

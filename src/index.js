@@ -4,7 +4,7 @@ import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
 import { ModersString, ModersArray } from './types.js'
 import { getStartUserObject, getReplyStartUserObject, getStartChatObject, getUserObject } from './templaces.js'
-import { MaxMin, formatDate, random } from './utils.js'
+import { MaxMin, formatDate, random, githubRepo } from './utils.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
 import dotenv from 'dotenv'
@@ -83,6 +83,7 @@ bot.command('help', async (ctx) => {
         data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
         await updateIndex(data)
     }
+    const repo = await githubRepo("shaman2016scratch/moders-tg-bot")
     ctx.reply(`<b>Команды:</b>
 /info [id] - информация о выбранном пользователе
 /me - ваша информация
@@ -103,7 +104,7 @@ bot.command('help', async (ctx) => {
 /random [min] [max]
 /game_top [size]
 Версия DashAttach: ${DashAttach.library.version}
-Исходный код: https://github.com/shaman2016scratch/moders-tg-bot
+Исходный код: ${repo.html_url} (${repo.stargazers_count})
     `, { parse_mode: "HTML" })
 })
 
