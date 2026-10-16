@@ -3,7 +3,7 @@ import { message } from 'telegraf/filters'
 import { getIndex, updateIndex } from './data.js'
 import { translate } from './lib/translations/index.js'
 import { ModersString, ModersArray } from './types.js'
-import { getStartUserObject, getReplyStartUserObject, getStartChatObject } from './templaces.js'
+import { getStartUserObject, getReplyStartUserObject, getStartChatObject, getUserObject } from './templaces.js'
 import { MaxMin, formatDate, random } from './utils.js'
 import bot from './bot.js'
 import DashAttach from 'dashattach'
@@ -794,7 +794,7 @@ bot.command('game_top', async (ctx) => {
     const count123 = MaxMin(ctx.message.text.split(" ")[1] || 5, 10, 3)
     const userArray = new ModersArray(Object.values(data.users))
     const sortedUsers = userArray.sortTop2()
-    const mapTop = sortedUsers.map((element, index) => { return `${index+1}. <a href="https://t.me/${element.username}">${element.username}</a> (${element.modersgamecoin})` })
+    const mapTop = sortedUsers.map((element, index) => { return `${index+1}. <a href="https://t.me/${getUserObject(element.username)}">${getUserObject(element.username)}</a> (${getUserObject(element).modersgamecoin})` })
     const topWithCount = mapTop.slice(0, count123)
     ctx.reply(`<b>Топ пользователей по ModersGameCoin:</b>
 ${topWithCount.join("\n")}
