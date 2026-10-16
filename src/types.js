@@ -1,3 +1,5 @@
+import { getUserObject } from "./templaces.js"
+
 class ModersString extends String {
     #str = undefined
 
@@ -113,12 +115,12 @@ class ModersArray extends Array {
     }
 
     sortTop () {
-        const sortedArr = this.#arr.toSorted((a, b) => b.reputation - a.reputation)
+        const sortedArr = this.#arr.toSorted((a, b) => getUserObject(b).reputation - getUserObject(a).reputation)
         return sortedArr
     }
 
     sortTop2 () {
-        const sortedArr = this.#arr.toSorted((a, b) => Number(b.modersgamecoin) - Number(a.modersgamecoin))
+        const sortedArr = this.#arr.toSorted((a, b) => getUserObject(b).modersgamecoin - getUserObject(a).modersgamecoin)
         return sortedArr
     }
 
@@ -140,6 +142,14 @@ class ModersArray extends Array {
 
     static isModersArray (val) {
         return val.type === new ModersArray(val).type
+    }
+
+    toSortedTop (action, key) {
+        return this.#arr.toSorted((a, b) => action(b)[key] - action(a)[key])
+    }
+
+    toSortedDown (action, key) {
+        return this.#arr.toSorted((a, b) => action(a)[key] - action(b)[key])
     }
 }
 
