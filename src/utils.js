@@ -85,7 +85,7 @@ const random = (min, max) => {
 }
 
 const githubFetch = (path = "", param = {}) => {
-    const res = fetch(["https://github.com",path].join("/"), param)
+    const res = fetch(["https://api.github.com",path].join("/"), param)
     return res
 }
 
