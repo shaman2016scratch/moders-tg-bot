@@ -105,6 +105,7 @@ bot.command('help', async (ctx) => {
 /random [min] [max]
 /game_top [size]
 Версия DashAttach: ${DashAttach.library.version}
+Версия Node.js/V8: ${process.versions.node} / ${process.versions.v8}
 Исходный код: ${repo.html_url} (${emoji.star}${repo.stargazers_count})
     `, { parse_mode: "HTML" })
 })
