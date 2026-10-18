@@ -1,5 +1,14 @@
 import { ModersObject } from "./types.js";
 
+const moderstimestart = Date.UTC(2026, 8, 6, 19, 23)
+const unixtimetomoderstime = (unixtime) => {
+    unixtime = new Date(unixtime)
+    return unixtime.getTime() - moderstimestart
+}
+const moderstimetounixtime = (moderstime) => {
+    return moderstime+moderstimestart
+}
+
 const getStartUserObject = (ctx) => {
     return {
         id: ctx.message.from.id,
@@ -28,8 +37,8 @@ const getStartChatObject = (ctx) => {
     return {
         firstName: ctx.message.chat.first_name || ctx.message.chat.title,
         username: ctx.message.chat.username || "unknown",
-        id: ctx.message.chat.id,
-        type: ctx.message.chat.type,
+        id: ctx.message.chat.id || null,
+        type: ctx.message.chat.type || "private",
         members: [
             ctx.message.from.id.toString()
         ],
@@ -40,15 +49,28 @@ const getStartChatObject = (ctx) => {
 
 const getUserObject = (obj) => {
     return {
-        id: obj.id,
+        id: obj.id || null,
         username: obj.username || "unknown",
         firstName: obj.firstName || "unknown",
         language: obj.language || "en",
-        joined: new Date(obj.joined || Date.UTC(2026, 8, 6, 19, 23)),
+        joined: new Date(obj.joined || moderstimestart),
         reputation: obj.reputation || 0,
         modersgamecoins: obj.modersgamecoins || 0,
         ref: obj.ref || undefined
     }
 }
 
-export { getStartUserObject, getReplyStartUserObject, getStartChatObject, getUserObject }
+const getChatObject = (obj) => {
+    return {
+        firstName: obj.firstName || "unknown",
+        username: obj.username || "unknown",
+        id: obj.id || null,
+        type: obj.type || "private",
+        members: obj.members || [],
+        inBotAt: new Date(obj.inBotAt || moderstimestart),
+        rating: obj.rating || null
+    }
+}
+
+export { getStartUserObject, getReplyStartUserObject, getStartChatObject, getUserObject, getChatObject }
+export { moderstimestart, unixtimetomoderstime, moderstimetounixtime }
