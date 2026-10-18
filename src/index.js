@@ -804,6 +804,30 @@ ${topWithCount.join("\n")}
     `, { parse_mode: "HTML" })
 })
 
+bot.command('server', async (ctx) => {
+    const data = await getIndex()
+    if (!Object.keys(data.users).includes(ctx.message.from.id.toString())) {
+        data.users[ctx.message.from.id.toString()] = getStartUserObject(ctx)
+        await updateIndex(data)
+    }
+    if (!Object.keys(data.chats).includes(ctx.message.chat.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()] = getStartChatObject(ctx)
+        await updateIndex(data)
+    }
+    if (!data.chats[ctx.message.chat.id.toString()].members.includes(ctx.message.from.id.toString())) {
+        data.chats[ctx.message.chat.id.toString()].members.push(ctx.message.from.id.toString())
+        await updateIndex(data)
+    }
+    ctx.reply(`<b>Информация о сервере</b>
+Время: ${formatDate(new Date(), 0)}
+Архитектура процессора: ${process.arch}
+Версия Node.js: ${process.versions.node}
+Версия V8: ${process.versions.v8}
+Версия DashAttach: ${DashAttach.library.version}
+
+    `, { parse_mode: "HTML" })
+})
+
 bot.launch()
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
