@@ -52,6 +52,8 @@ bot.command('start', async (ctx) => {
         await updateIndex(data)
     }
     await ctx.reply(`Добро пожаловать в Модерс Бота!
+Я написан на Node.js при помощи библиотеки Telegraf.js и собственных утилит автора.
+Я умею модерировать и развлекатью Кстати, мой исходный код открыт и свободен (ссылка в /help)!
 Отправьте /help для получения помощи по боту.
     `, { parse_mode: "HTML" })
     if (ctx.message.text.split(" ")[1]) if (ctx.message.text.split(" ")[1].split("=")[0] === "ref") {
