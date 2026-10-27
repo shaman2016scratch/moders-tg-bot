@@ -102,10 +102,11 @@ bot.command('help', async (ctx) => {
 /thischat - информация о этом чате
 /dashstudio [id] - информация о студии на <a href="https://dashblocks.org">Dash</a>
 /time [type] [timecode] - время
-/random [min] [max]
+/random [min] [max] - рандомное число
 /game_top [size]
+/server - информация о устройстве где запущено
 Версия DashAttach: ${DashAttach.library.version}
-Версия Node.js/V8: ${process.versions.node} / ${process.versions.v8}
+Версия Node.js / V8: ${process.versions.node} / ${process.versions.v8}
 Исходный код: ${repo.html_url} (${emoji.star}${repo.stargazers_count})
     `, { parse_mode: "HTML" })
 })
