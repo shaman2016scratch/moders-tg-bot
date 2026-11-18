@@ -2,8 +2,6 @@ import { Telegraf } from 'telegraf'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import dotenv from 'dotenv'
-import { setDefaultResultOrder } from "node:dns";
-setDefaultResultOrder("ipv4first")
 
 dotenv.config()
 
